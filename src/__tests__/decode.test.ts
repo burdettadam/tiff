@@ -11,10 +11,11 @@ const files = [
   'grey8.tif',
   'grey16.tif',
   'color8.tif',
+  'color8c.tif',
   'color16.tif',
+  'color16c.tif',
   'whiteIsZero.tif',
 ];
-// const files = ['color8c.tif'];//'grey8.tif', 'grey16.tif', 'color8.tif', 'color16.tif'];
 const contents = files.map(readImage);
 
 const stack = readImage('stack.tif');

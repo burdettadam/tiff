@@ -2,8 +2,9 @@ import { IOBuffer } from 'iobuffer';
 
 import IFD from './ifd';
 import { getByteLength, readData } from './ifdValue';
-import { BufferType, IDecodeOptions, IFDKind, DataArray } from './types';
+import { decompressLzw } from './lzw';
 import TiffIfd from './tiffIfd';
+import { BufferType, IDecodeOptions, IFDKind, DataArray } from './types';
 
 const defaultOptions: IDecodeOptions = {
   ignoreImageData: false,
@@ -221,8 +222,19 @@ export default class TIFFDecoder extends IOBuffer {
             length,
           );
           break;
-        case 5: // LZW
-          throw unsupported('Compression', 'LZW');
+        case 5: {
+          // LZW
+          const lzw = decompressLzw(stripData, length);
+          pixel = this.fillUncompressed(
+            bitDepth,
+            sampleFormat,
+            data,
+            lzw.data,
+            pixel,
+            lzw.length,
+          );
+          break;
+        }
         case 2: // CCITT Group 3 1-Dimensional Modified Huffman run length encoding
         case 32773: // PackBits compression
           throw unsupported('Compression', compression);
@@ -312,7 +324,7 @@ function fillFloat32(
   return index;
 }
 
-function unsupported(type: string, value: any): Error {
+function unsupported(type: string, value: unknown): Error {
   return new Error(`Unsupported ${type}: ${value}`);
 }
 
