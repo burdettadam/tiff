@@ -37,7 +37,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "iobuffer": "github:burdettadam/iobuffer#master",
+    "iobuffer": "burdettadam/iobuffer#master",
     "pako": "^2.0.2"
   },
   "devDependencies": {
